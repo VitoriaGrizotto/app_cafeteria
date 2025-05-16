@@ -1,33 +1,16 @@
+import 'package:app_cafe_com_afeto/detalhesProdutos.dart';
+import 'package:app_cafe_com_afeto/cadastroProduto.dart'; // ← certifique-se que esse arquivo existe
 import 'package:flutter/material.dart';
 
 class HomeCafeteria extends StatelessWidget {
   final List<Map<String, dynamic>> produtos = [
     {
-      'Nome': 'Café Especial Arara Edição Limitada 250g',
-      'Sensorial': 'Doçura intensa, corpo aveludado e macio, sabor frutado, acidez cítrica prazerosa com notas de mix de frutas frescas.',
-      'Preco': 'R\$60,00'
+      'Nome': 'Café Arara Edição Limitada',
+      'Sensorial': 'Doçura intensa, corpo aveludado, frutado.',
+      'Preço': 'R\$60,00',
+      'Imagem': 'https://acdn-us.mitiendanube.com/stores/001/371/162/products/mockup-arara-1-nshop-1024x1024-910003f3b60f644c1617402261978898-1024-1024.webp'
     },
-
-    {
-      'Nome': 'Café Especial Caramelo e Mel 250g',
-      'Sensorial': 'Doçura intensa, corpo alto, acidez cítrica equilibrada com notas de caramelo e mel.',
-      'Preco': 'R\$50,00'
-    },
-
-    {
-      'Nome': 'Café Gourmet Chocolate Intenso 500g',
-      'Sensorial': 'Doçura intensa, corpo alto com notas de chocolate.',
-      'Preco': 'R\$55,00'
-      
-    },
-
-    {
-      'Nome' : 'Café Especial Frutas Amarelas 250g',
-      'Sensorial' : 'Doçura intensa, corpo licoroso, sabor frutado, acidez cítrica brilhante com notas de frutas amarelas, maracujá',
-      'Preco' : 'R\$52,00'
-
-    },
-
+    // ... (demais produtos)
   ];
 
   @override
@@ -35,48 +18,93 @@ class HomeCafeteria extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF8D6E63),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text('Cafeteria da Sandra'),
-        backgroundColor: const Color (0xFF8D6E63),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              // Se der tempo fazer a tela de carrinho
+            },
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView.builder(
+        padding: const EdgeInsets.all(12),
+        child: GridView.builder(
           itemCount: produtos.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 0.7,
+          ),
           itemBuilder: (context, index) {
             final produto = produtos[index];
-            return Card(
-              color: const Color.fromARGB(255, 214, 178, 164),
-              margin: const EdgeInsets.only(bottom: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              
-              ),
-            child: Padding(
-                padding: const EdgeInsets.all(16),
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetalhesProdutos(produto: produto),
+                  ),
+                );
+              },
+              child: Card(
+                color: const Color.fromARGB(255, 239, 224, 213),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 4,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      produto['Nome'],
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF5D4037),
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                      child: Image.network(
+                        produto['Imagem'],
+                        height: 120,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      produto['Sensorial'],
-                      style: const TextStyle(color: Color(0xFF795548)),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      produto['Preco'],
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF4E342E),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            produto['Nome'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color(0xFF4E342E),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            produto['Sensorial'],
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF6D4C41),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            produto['Preço'],
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF3E2723),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -85,6 +113,17 @@ class HomeCafeteria extends StatelessWidget {
             );
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF8D6E63),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CadastroProduto()),
+          );
+        },
+        child: const Icon(Icons.add),
+        tooltip: 'Cadastrar novo produto',
       ),
     );
   }

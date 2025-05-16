@@ -89,12 +89,12 @@ class LoginPage extends StatelessWidget {
 
                   if (usuarioDigitado == usuarioCadastrado &&
                       senhaDigitada == senhaCadastrada) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomeCafeteria(),
-                      ),
-                    );
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeCafeteria(),
+                    ),
+                  );
                   } else {
                     showDialog(
                       context: context,
