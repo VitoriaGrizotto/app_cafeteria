@@ -1,16 +1,20 @@
 import 'package:app_cafe_com_afeto/detalhesProdutos.dart';
-import 'package:app_cafe_com_afeto/cadastroProduto.dart'; // ← certifique-se que esse arquivo existe
+import 'package:app_cafe_com_afeto/cadastroProduto.dart';
 import 'package:flutter/material.dart';
 
-class HomeCafeteria extends StatelessWidget {
-  final List<Map<String, dynamic>> produtos = [
+class HomeCafeteria extends StatefulWidget {
+  @override
+  _HomeCafeteriaState createState() => _HomeCafeteriaState();
+}
+
+class _HomeCafeteriaState extends State<HomeCafeteria> {
+  List<Map<String, dynamic>> produtos = [
     {
       'Nome': 'Café Arara Edição Limitada',
       'Sensorial': 'Doçura intensa, corpo aveludado, frutado.',
       'Preço': 'R\$60,00',
       'Imagem': 'https://acdn-us.mitiendanube.com/stores/001/371/162/products/mockup-arara-1-nshop-1024x1024-910003f3b60f644c1617402261978898-1024-1024.webp'
     },
-    // ... (demais produtos)
   ];
 
   @override
@@ -21,18 +25,14 @@ class HomeCafeteria extends StatelessWidget {
         backgroundColor: const Color(0xFF8D6E63),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Cafeteria da Sandra'),
         centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              // Se der tempo fazer a tela de carrinho
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -69,7 +69,7 @@ class HomeCafeteria extends StatelessWidget {
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                       child: Image.network(
-                        produto['Imagem'],
+                        produto['Imagem'] ?? 'https://via.placeholder.com/150',
                         height: 120,
                         fit: BoxFit.cover,
                       ),
@@ -97,7 +97,7 @@ class HomeCafeteria extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            produto['Preço'],
+                            produto['Preço'] ?? '',
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -116,11 +116,17 @@ class HomeCafeteria extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF8D6E63),
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final novoProduto = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CadastroProduto()),
           );
+
+          if (novoProduto != null) {
+            setState(() {
+              produtos.add(novoProduto);
+            });
+          }
         },
         child: const Icon(Icons.add),
         tooltip: 'Cadastrar novo produto',

@@ -1,52 +1,95 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CadastroProduto extends StatefulWidget {
-  const CadastroProduto({super.key});
-
   @override
-  State<CadastroProduto> createState() => _CadastroProdutoState();
+  _CadastroProdutoState createState() => _CadastroProdutoState();
 }
 
 class _CadastroProdutoState extends State<CadastroProduto> {
-  final _nomeController = TextEditingController();
-  final _descricaoController = TextEditingController();
-  final _precoController = TextEditingController();
+  final TextEditingController nomeController = TextEditingController();
+  final TextEditingController descricaoController = TextEditingController();
+  final TextEditingController precoController = TextEditingController();
 
-  void _salvarProduto() {
-    final nome = _nomeController.text;
-    final descricao = _descricaoController.text;
-    final preco = double.tryParse(_precoController.text) ?? 0.0;
 
-    await FirebaseFirestore.instance.collection('produtos').add({
-      'nome': nome,
-      'descricao': descricao,
-      'preco': preco,
-      'imagem': imagem,
-    });
+void salvarProduto() {
+  String nome = nomeController.text.trim();
+  String descricao = descricaoController.text.trim();
+  String preco = precoController.text.trim();
 
+  if (nome.isEmpty || descricao.isEmpty || preco.isEmpty || imagemSelecionada == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Produto salvo com sucesso!')),
+      SnackBar(
+        content: Text('Preencha todos os campos e selecione uma imagem!'),
+        backgroundColor: Colors.redAccent,
+      ),
     );
-
-    _nomeController.clear();
-    _descricaoController.clear();
-    _precoController.clear();
+    return;
   }
+
+  final produto = {
+    'Nome': nome,
+    'Sensorial': descricao,
+    'Preço': 'R\$${preco.replaceAll(',', '.')}',
+    //'Imagem': imagemSelecionada,
+  };
+
+  widget.onProdutoCadastrado(produto);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Produto "$nome" cadastrado com sucesso!'),
+      backgroundColor: Colors.green,
+    ),
+  );
+
+  Navigator.pop(context);
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cadastrar Produto')),
+      backgroundColor: Color(0xFFFFF3E0),
+      appBar: AppBar(
+        title: Text('Cadastrar Produto'),
+        backgroundColor: Color(0xFF8D6E63),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            TextField(controller: _nomeController, decoration: const InputDecoration(labelText: 'Nome')),
-            TextField(controller: _descricaoController, decoration: const InputDecoration(labelText: 'Descrição')),
-            TextField(controller: _precoController, decoration: const InputDecoration(labelText: 'Preço')),
-            const SizedBox(height: 20),
-            ElevatedButton(onPressed: _salvarProduto, child: const Text('Salvar')),
+            TextField(
+              controller: nomeController,
+              decoration: InputDecoration(
+                labelText: 'Nome do produto',
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: Icon(Icons.local_cafe),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: descricaoController,
+              maxLines: 3,
+              decoration: InputDecoration(
+                labelText: 'Descrição sensorial',
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: Icon(Icons.description),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: salvarProduto,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF8D6E63),
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text('Salvar', style: TextStyle(fontSize: 16)),
+            ),
           ],
         ),
       ),
