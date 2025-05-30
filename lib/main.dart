@@ -1,6 +1,4 @@
-import 'package:app_cafe_com_afeto/HomeCafeteria.dart';
 import 'package:flutter/material.dart';
-import 'HomeCafeteria.dart'; 
 
 void main() {
   runApp(CafeteriaApp());
